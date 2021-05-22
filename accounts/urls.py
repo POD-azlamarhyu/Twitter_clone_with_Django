@@ -3,5 +3,5 @@ from . import views
 
 app_name='accounts'
 urlpatterns = [
-    path('',views.TopPage.as_view(),name="top")
+    path('',views.TopPage.as_view(),name="base"),
 ]
