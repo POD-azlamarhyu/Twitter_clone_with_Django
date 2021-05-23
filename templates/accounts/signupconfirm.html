@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div>
+    <ul>
+        <li>name : {{form.cleaned_data.username}}</li>
+        <li>email : {{form.cleaned_data.email}}</li>
+        <li>password : ************* </li>
+    </ul>
+    <form action="" method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+        {{field.as_hidden}}
+        {% endfor %}
+        <button name="next" value="back" type="submit">修正する</button>
+        <button name="next" value="regist" type="submit">登録</button>
+    </form>
+</div>
+{% endblock%}
