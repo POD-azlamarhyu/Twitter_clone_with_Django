@@ -15,7 +15,7 @@ class TopPage(TemplateView):
 class UserCreateView(FormView):
     form_class = UsrCreateForm
     template_name = 'accounts/signup.html'
-    success_url = reverse_lazy('accounts:top.html')
+    success_url = reverse_lazy('accounts:base')
 
 
     def form_valid(self,form):
@@ -25,14 +25,14 @@ class UserCreateView(FormView):
         if self.request.POST['next'] == 'back':
             return render(self.request,'accounts/signup.html',context)
 
-        elif self.request.POST['next']  == "confirm":
+        elif self.request.POST['next']  == 'confirm':
             return render(self.request,'accounts/signupconfirm.html',context)
         
-        elif self.request.POST['next'] == "regist":
+        elif self.request.POST['next'] == 'regist':
             form.save()
             user = authenticate(
                 email = form.cleaned_data['email'],
-                username = form.cleaned_data['username'],
+                # username = form.cleaned_data['username'],
                 password = form.cleaned_data['password1'],
             )
             login(self.request,user)
