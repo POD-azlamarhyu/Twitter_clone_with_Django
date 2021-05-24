@@ -53,7 +53,7 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'toweetCfg.urls'
-
+AUTH_USER_MODEL='accounts.User'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -71,7 +71,9 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'toweetCfg.wsgi.application'
+LOGIN_URL = 'accounts:login'
 
+LOGIN_REDIRECT_URL = 'base'
 
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
