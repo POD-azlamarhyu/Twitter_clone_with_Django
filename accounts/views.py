@@ -1,54 +1,55 @@
 from django.shortcuts import render,redirect
 from django.contrib.auth import login,logout,authenticate
 from django.contrib.auth.forms import AuthenticationForm,UserCreationForm
-from django.views.generic import TemplateView
+from django.views.generic import TemplateView,FormView,UpdateView
+from django.urls import reverse_lazy
+from django.contrib.auth.views import LoginView,LogoutView
+from .forms import UsrCreateForm,LoginForm
+from .models import User
+
+
+
 # Create your views here.
 
 class TopPage(TemplateView):
-    template_name = "top.html"
+    template_name = "base.html"
 
-class LoginAccount():
-    
-    def loginView(request,*args,**kwargs):
-        form = AuthenticationForm(request,data=request.POST or None)
-        if form.is_valid():
-            user = form.get_user()
-            login(request,user)
-            return redirect("/")
+class UserCreateView(FormView):
+    form_class = UsrCreateForm
+    template_name = 'accounts/signup.html'
+    success_url = reverse_lazy('accounts:base')
 
+
+    def form_valid(self,form):
         context = {
-            "form":form,
-            "btn_label":"ログイン",
-            "title":"ログイン"
+            'form':form
         }
-        return render(request,"accounts/login.html",context)
+        if self.request.POST['next'] == 'back':
+            return render(self.request,'accounts/signup.html',context)
 
-    def logoutView(request,*args,**kwargs):
-        if request.method == "POST":
-            logout(request)
-            return redirect("/login")
+        elif self.request.POST['next']  == 'confirm':
+            return render(self.request,'accounts/signupconfirm.html',context)
+        
+        elif self.request.POST['next'] == 'regist':
+            form.save()
+            user = authenticate(
+                email = form.cleaned_data['email'],
+                # username = form.cleaned_data['username'],
+                password = form.cleaned_data['password1'],
+            )
+            login(self.request,user)
+            return super.form_valid(form)
+        else:
+            return redirect(reverse_lazy('base'))
 
-        context={
-            "form":None,
-            "description":"ログアウトしますか？",
-            "btn_label":"Logout",
-            "title":"Logout"
-        }
-        return render(request,"account/login.html",context)
+class LoginViews(LoginView):
+    form_class = LoginForm
+    template_name = 'accounts/login.html'
+    success_url = reverse_lazy('accounts:base')
 
-class CreateAccount():
-    def registerView(request,*args,**kwargs):
-        form = UserCreationForm(request.POST or None)
-        if form.is_valid():
-            user = form.save(commit=True)
-            user.set_password(form.cleaned_data.get("password1"))
-            login(request,user)
-            return redirect("/")
+class LogoutViews(LogoutView):
+    template_name = 'accounts/logout.html'
+    success_url = reverse_lazy('accounts:base')
 
-        context={
-            "form":form,
-            "btn_label":"登録",
-            "title":"登録"
-        }
-
-        return render(request,"accounts/create.html",context)
+class LogoutViews(TemplateView):
+    template_name="accounts/logged_out.html"
