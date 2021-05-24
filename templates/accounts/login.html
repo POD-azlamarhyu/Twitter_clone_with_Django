@@ -1,5 +1,22 @@
-{% extends "top.html"%}
+{% extends 'base.html' %}
 
-<div>
-    <h1></h1>
-</div>
+{% block content %}
+<dic>
+    <div>
+        <a href="{% url 'base'%}" >Top</a>
+        <a>ログイン</a>
+    </div>
+    <dvi>
+        <div>
+            <div>
+                <h2>ログイン</h2>
+            </div>
+            <form action="" method="POST">
+                {% csrf_token %}
+                {{form.as_p}}
+                <button type="submit">ログイン</button>
+            </form>
+        </div>
+    </dvi>
+</dic>
+{% endblock %}
