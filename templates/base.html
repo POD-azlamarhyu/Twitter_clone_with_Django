@@ -1,0 +1,53 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="ja">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="Content-Type" content="text/html; charset=shift_jis" />
+        <meta http-equiv="Content-Type" content="text/html; charset=euc-jp" />
+        <meta http-equiv="Content-Type" content="text/html; charset=iso-2022-jp" />
+        <meta name="viewport" content="width = device-width ,initial-scale = 1" />
+        <meta name="author" content="" />
+        <meta name="robots" content="noindex,nofollow" />
+        <meta http-equiv="pragma" content="no-cache" />
+        <meta http-equiv="cache-control" content="no-cache" />
+        <meta http-equiv="Content-Style-Type" content="text/css" />
+        <meta http-equiv="Content-Script-Type" content="text/javascript" />
+        <title>Toweet</title>
+        <meta itemprop="position" content="" />
+        <meta name="description" content="" />
+        <meta name="keyword" content="" />
+        <meta name="generator" content="notepad" />
+        <link
+        href="https://use.fontawesome.com/releases/v5.6.1/css/all.css"
+        rel="stylesheet"
+        />
+    </head>
+    <body>
+        <header>
+            ToWeet
+        </header>
+        <nav>
+            {% if user.is_authenticated %}
+                <a href="">ユーザ情報</a>
+                <a href="{% url 'accounts:logout'%}">ログアウト</a>
+            {% else %}
+                <a href="{% url 'accounts:signup' %}">サインアップ</a>
+                <a href="{% url 'accounts:login' %}">ログイン</a>
+            {% endif %}
+        </nav>
+        <main>
+            {% block content%}
+            {% endblock %}
+
+            {% if user.is_authenticated %}
+                {% block maincontent %}
+                {% endblock %}
+            {% else %}
+            {% endif %}
+        </main>
+        <footer>
+            <p>toweet by C.I. Acad. copyright</p>
+        </footer>
+    </body>
+</html>
