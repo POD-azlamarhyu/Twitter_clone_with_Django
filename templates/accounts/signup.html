@@ -1,0 +1,17 @@
+{% extends 'base.html' %}
+
+{% block content%}
+<div>
+    <div>
+        <a href="{% url 'accounts:base' %}">TOP</a>
+    </div>
+    <div>
+        <h3>ユーザ登録</h3>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {{form.as_p}}
+            <button name="next" value="confirm" type="submit">登録確認</button>
+        </form>
+    </div>
+</div>
+{% endblock%}
