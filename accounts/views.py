@@ -49,7 +49,7 @@ class LoginViews(LoginView):
 
 class LogoutViews(LogoutView):
     template_name = 'accounts/logout.html'
-    success_url = reverse_lazy('accounts:base')
+    success_url = reverse_lazy('accounts:loggedout')
 
-class LogoutViews(TemplateView):
+class LogedoutViews(TemplateView):
     template_name="accounts/logged_out.html"

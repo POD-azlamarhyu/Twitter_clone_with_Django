@@ -74,8 +74,8 @@ TEMPLATES = [
 WSGI_APPLICATION = 'toweetCfg.wsgi.application'
 LOGIN_URL = 'accounts:login'
 
-LOGIN_REDIRECT_URL = 'base'
-
+LOGIN_REDIRECT_URL = 'accounts:base'
+LOGOUT_REDIRECT_URL = 'accounts:loggedout'
 # Database
 # https://docs.djangoproject.com/en/3.2/ref/settings/#databases
 

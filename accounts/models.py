@@ -48,6 +48,7 @@ class User(AbstractBaseUser, PermissionsMixin):
                             primary_key=True, editable=False,max_length=36)
 
     email = models.EmailField(_('email address'), unique=True)
+    
     username = models.CharField(_('ニックネーム'), max_length=150, blank=True)
 
     is_staff = models.BooleanField(

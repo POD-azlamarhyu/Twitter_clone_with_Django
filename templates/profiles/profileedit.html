@@ -1,0 +1,20 @@
+{% extends 'base.html' %}
+{% block content %}
+<div>
+    <div>
+        <a href="{% url 'accounts:base' %}">Top</a>
+        <a href="{% url 'profiles:profile_detail'%}">プロフィール</a>
+    </div>
+    <div>
+        <h2>プロフィールの変更</h2>
+        <form action="" method="POST">
+            {{userForm.as_p}}
+            {% csrf_token %}
+            {{profileForm.as_p}}
+            <button name="next" value="edit" type="submit">更新</button>
+        </form>
+
+        <a href="{% url 'profiles:profile_detail'%}">プロフィールへ戻る</a>
+    </div>
+</div>
+{% endblock%}
