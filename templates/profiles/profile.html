@@ -5,7 +5,7 @@
     <div>
         <div>
             <a href="{% url 'accounts:base' %}">Top</a>
-            <a href="{% url 'profiles:profile_edit'%}">プロフィール編集</a>
+            <a href="{% url 'profiles:edit' user.pk %}">プロフィール編集</a>
         </div>
         <ul>
             <li>アカウント id {{profiles.account_id}}</li>

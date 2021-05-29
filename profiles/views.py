@@ -7,86 +7,33 @@ from django.views.generic import CreateView,FormView,UpdateView,TemplateView,Det
 from django.contrib.auth.mixins import LoginRequiredMixin,UserPassesTestMixin
 from django.urls import reverse_lazy
 from .models import Profiles
-from .forms import UserCreateForm,ProfilesForm
+from .forms import ProfilesForm
+from django.contrib import messages
 # from ..accounts.forms import UsrCreateForm
 
 User = get_user_model()
 
-def profileEditView(request,*args,**kwargs):
-    if not request.user.is_authenticated:
-        return render(request,"profiles/profile.html")
+class ProfileCreateView(LoginRequiredMixin,CreateView):
+    model = Profiles
+    form_class = ProfilesForm
+    template_name = "profiles/profileedit.html"
+    success_url = "/"
+
+    def form_valid(self,form):
+        messages.success(self.request,"保存しました")
+        return super().form_valid(form)
+
+    def form_invalid(self,form):
+        messages.warning(self.request,"保存できませんでした")
+        return super().form_invalid(form)
+
+    # def get_success_url(self):
+    #     return resolve_url('edit',pk=self.kwargs['pk'])
+
+class ProfileView(LoginRequiredMixin,TemplateView):
+    template_name = "profiles/profile.html"
+    user_id = User.objects.filter
     
-    userForm = UserCreateForm(request.POST or None)
-    profileForm = ProfilesForm(request.POST or None)
+    def get_queryset(self):
+        return Profiles.objects.filter(user=self.request.user)
 
-    if request.method == "POST" and userForm.is_valid() and profileForm.is_valid():
-        user = userForm.save(commit=False)
-        user.is_active = True
-        user.save()
-
-        profile = profileForm.save(commit=False)
-        profile.user_id = request.user.user_id
-        profile.save()
-
-        return redirect("profiles:profile_detail")
-
-    context = {
-        "userFrom":userForm,
-        "profileForm":profileForm,
-    }
-
-    
-    return render(request,"profiles/profileedit.html",context)
-
-
-
-# # Create your views here.
-# class OnlyYouMixin(UserPassesTestMixin):
-#     raise_exception = True
-#     def test_func(self):
-#         user= self.request.user
-#         return user.pk == self.kwargs['pk'] or user.is_superuser
-
-# class ProfilesEditView(OnlyYouMixin,FormView):
-#     model = Profiles
-#     template_name = 'profiles/profileedit.html'
-#     form_class = ProfilesForm
-#     #success_url = reverse_lazy('profiles:profiles_detail')
-
-#     def get_success_url(self):
-#         return resolve_url('profiles:profile_detail',pk=self.kwargs['pk'])
-
-#     def form_valid(self,form):
-        
-#         return super().form_valid(form)
-
-#     # def get_form_kwargs(self):
-#     #     kwargs = super().get_form_kwargs()
-#     #     kwargs.update({
-#     #         'account_id' : self.request.profiles.account_id,
-#     #         'location' : self.request.profiles.location,
-#     #         'bio':self.request.profiles.bio,
-#     #         'icon':self.request.profiles.icon,
-#     #         'header_img':self.request.profiles.header_img,
-#     #     })
-
-#     #     return kwargs
-def profileView(request,user_id,*args,**kwargs):
-    qs = Profiles.objects.filter(user__user_id=user_id)
-
-    profile = qs.first()
-    if not qs.exists():
-        raise Http404
-    
-    if request.user.is_authenticated:
-        user = request.user
-
-    context = {
-        "user_id":user_id,
-        "profile":profile,
-    }
-
-    return render(request,"profiles/profile.html",context)
-
-    # def get_queryset(self):
-    #     return Profiles.objects.get(id=self.request.profiles.id)

@@ -5,10 +5,10 @@ from django.utils import timezone
 from django.conf import settings
 
 # Create your models here.
-User = get_user_model()
+User = settings.AUTH_USER_MODEL
 class Profiles(models.Model):
     
-    user = models.OneToOneField(User,primary_key=True,on_delete=models.CASCADE,blank = True)
+    user = models.OneToOneField(settings.AUTH_USER_MODEL,primary_key=True,on_delete=models.CASCADE)
     account_id = models.CharField(max_length=255,unique=True)
     location = models.CharField(max_length=220,null=True,blank=True)
     bio = models.TextField(blank=True,null=True)
