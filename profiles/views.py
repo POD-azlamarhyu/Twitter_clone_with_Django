@@ -17,9 +17,10 @@ class ProfileCreateView(LoginRequiredMixin,CreateView):
     model = Profiles
     form_class = ProfilesForm
     template_name = "profiles/profileedit.html"
-    success_url = "/"
+    success_url = "profiles/profileedit.html"
 
     def form_valid(self,form):
+        form.save()
         messages.success(self.request,"保存しました")
         return super().form_valid(form)
 
@@ -32,7 +33,7 @@ class ProfileCreateView(LoginRequiredMixin,CreateView):
 
 class ProfileView(LoginRequiredMixin,TemplateView):
     template_name = "profiles/profile.html"
-    user_id = User.objects.filter
+    
     
     def get_queryset(self):
         return Profiles.objects.filter(user=self.request.user)
