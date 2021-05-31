@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block tweet %}
+<h2>tweets</h2>
+<div>
+    <form class="" method="POST" action="/tweetform">
+    
+    </form>
+</div>
+{% for tweet in tweetlist %}
+<div>
+    <div>
+        <div>
+
+        </div>
+        <div>
+            <p>{{tweet.text}}</p>
+        </div>
+    </div>
+</div>
+{% endfor %}
+{% endblock %}
