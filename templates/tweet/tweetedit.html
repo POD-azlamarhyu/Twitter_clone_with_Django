@@ -1,11 +1,12 @@
+{% extends 'base.html' %}
 {% block tweet %}
 <div>
-    <h2>Tweet Form!</h2>
+    <h2>Tweet Edit</h2>
 </div>
 <form action="" method="POST">
     {% csrf_token %}
     {{form.as_p}}
-    <button type="submit">tweet</button>
+    <button type="submit">修正</button>
 </form>
 <a href="{% url 'tweet:tweetlist' %}">戻る</a>
 <div>
@@ -15,4 +16,4 @@
         {% endfor %}
     {% endif %}
 </div>
-{% endblock%}
+{% endblock %}

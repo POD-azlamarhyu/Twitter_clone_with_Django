@@ -6,9 +6,9 @@ class TweetForm(forms.ModelForm):
         model = Tweet
         fields = ['text','images','videos']
 
-    def clean_content(self):
-        text = self.cleaned_data.get("text")
-        if len(text) > 500:
-            raise forms.ValidationError("文字数をオーバーしています。500文字以下にしてください")
+    # def clean_content(self):
+    #     context = self.cleaned_data.get("text")
+    #     if len(context) > 500:
+    #         raise forms.ValidationError("文字数をオーバーしています。500文字以下にしてください")
 
-        return text
+    #     return context

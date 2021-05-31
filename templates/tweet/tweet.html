@@ -1,17 +1,19 @@
 {% extends 'base.html' %}
 
 {% block tweet %}
-<h2>tweets</h2>
+<h2>Time Line</h2>
 <div>
-    <form class="" method="POST" action="/tweetform">
+    <!-- <form class="" method="POST" action="/tweetform">
     
-    </form>
+    </form> -->
+    <a href="{% url 'tweet:tweetcreate' %}">ツイート</a>
 </div>
 {% for tweet in tweetlist %}
 <div>
     <div>
         <div>
-
+            <a href="{% url 'tweet:tweetdetail' tweet.id %}">詳細</a>
+            <a href="{% url 'tweet:tweetedit' tweet.id %}">編集</a>
         </div>
         <div>
             <p>{{tweet.text}}</p>

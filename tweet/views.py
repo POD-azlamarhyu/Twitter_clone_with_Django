@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse,Http404,JsonResponse
 from .models import *
 from .forms import *
@@ -37,14 +37,14 @@ def tweetDetailView(request,tweet_id,*args,**kwargs):
         raise Http404
     
     context = {
-        "tweet" : tweet
+        "tweet" : tweet,
     }
 
-    return render(request,'tweet/tweet.html',context)
+    return render(request,'tweet/tweetdetail.html',context)
 
 def tweetListView(request,*args,**kwargs):
     qs = Tweet.objects.all()
-    tweetList = [{"id" : x.id,"text":x.text} for x in qs]
+    #tweetList = [{"id" : x.id,"text":x.text} for x in qs]
 
     context = {
         "tweetlist" : qs
@@ -53,18 +53,55 @@ def tweetListView(request,*args,**kwargs):
     return render(request,"tweet/tweet.html",context)
 
 def tweetCreateView(request,*args,**kwargs):
-    form = TweetForm(request.POST or None)
+    form = TweetForm()
 
-    if form.is_valid():
-        tweet = form.save(commit=False)
-        tweet.save()
-        messages.success(request,"投稿しました")
-        form = TweetForm()
-    
+    if request.method == "POST":
+        form = TweetForm(request.POST)
+        
+        if form.is_valid():
+            tweet = form.save(commit=False)
+            tweet.save()
+        # messages.success(request,"投稿しました")
+        
+        return redirect('tweet:tweetlist')
     context = {
-        "form" : form
+        "form" : form,
     }
 
     return render(request,"tweet/tweetform.html",context)
 
+def tweetEditView(request,tweet_id,*args,**kwargs):
 
+    tweet = Tweet.objects.get(id=tweet_id)
+    form = TweetForm(instance=tweet)
+    
+    if request.method == "POST":
+        form = TweetForm(request.POST,instance=tweet)
+        if form.is_valid():
+            form.save()
+            # messages.success(request,"修正しました")
+            # tweet.save()
+            return redirect('tweet:tweetlist')
+    
+    context = {
+        "form":form
+    }
+
+    return render(request,"tweet/tweetedit.html",context)
+
+def tweetDeleteView(request,tweet_id,*args,**kwargs):
+    tweet = Tweet.objects.get(id=tweet_id)
+
+    if request.method == "POST":
+        tweet.delete()
+
+        return redirect('tweet:tweetlist')
+
+    context = {
+        "tweet":tweet,
+        "tweet_id":tweet_id
+    }
+
+    return render(request,'tweet/tweetdelete.html',context)
+
+    
