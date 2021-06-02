@@ -53,6 +53,15 @@ def tweetListView(request,*args,**kwargs):
     return render(request,"tweet/tweet.html",context)
 
 def tweetCreateView(request,*args,**kwargs):
+
+    user = request.user
+
+    if not request.user.is_authenticated:
+        if request.is_ajax():
+            return JsonResponse({},status=401)
+
+        return redirect(settings.LOGIN_URL)
+
     form = TweetForm()
 
     if request.method == "POST":
@@ -60,6 +69,7 @@ def tweetCreateView(request,*args,**kwargs):
         
         if form.is_valid():
             tweet = form.save(commit=False)
+            tweet.user = user
             tweet.save()
         # messages.success(request,"投稿しました")
         
