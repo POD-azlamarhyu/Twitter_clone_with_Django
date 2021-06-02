@@ -1,9 +1,11 @@
 from django.db import models
 from django.conf import settings
 
+User = settings.AUTH_USER_MODEL
 
 class Tweet(models.Model):
     #id = models.AutoField(primary_key=True)
+    user = models.ForeignKey(User,on_delete=models.CASCADE)
     text = models.CharField(max_length=500,blank=True,null=True)
     images = models.FileField(upload_to='images/',blank=True,null=True)
     videos = models.FileField(upload_to='videos/',blank=True,null=True)
