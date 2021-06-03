@@ -31,6 +31,8 @@ ALLOWED_HOSTS = ['127.0.0.1','localhost']
 
 LOGIN_URL = 'login/'
 LOGOUT_URL = 'logout/'
+LOGIN_REDIRECT_URL = 'tweet:tweetlist/'
+LOGOUT_REDIRECT_URL = 'base'
 # Application definition
 
 INSTALLED_APPS = [
@@ -41,6 +43,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'tweet',
+    'accounts',
 ]
 
 MIDDLEWARE = [
