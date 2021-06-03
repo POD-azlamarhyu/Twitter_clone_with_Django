@@ -25,7 +25,8 @@ def homeView(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home/',homeView),
+    path('home/',homeView,name="base"),
     path('',topView),
     path('',include('tweet.urls')),
+    path('',include('accounts.urls')),
 ]

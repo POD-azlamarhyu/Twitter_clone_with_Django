@@ -31,7 +31,26 @@
         <header class="container-fluid bg-primary">
             <h1 class="text-white">ToWeet</h1>
         </header>
-
+        <nav class="navbar">
+            {% if user.is_authenticated %}
+            <ul class="navbar">
+                <li class="nav-item">
+                    <a href="{% url 'accounts:logout'%}">ログアウト</a>
+                </li>
+            </ul>
+            {% else %}
+            <ul class="navbar">
+                <li class="nav-item">
+                    <a href="{% url 'accounts:signup'%}">登録</a>
+                </li>
+            </ul>
+            <ul class="navbar">
+                <li class="nav-item">
+                    <a href="{% url 'accounts:login'%}">ログイン</a>
+                </li>
+            </ul>
+            {% endif %}
+        </nav>
         <main class="container">
             <div class="row">
                 <div class="col"></div>
