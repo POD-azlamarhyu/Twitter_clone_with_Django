@@ -25,10 +25,8 @@ def tweetDetailView(request,tweet_id,*args,**kwargs):
     
     tweet = qs.first()
     serializer = TweetSerializer(tweet)
-
     return Response(serializer.data,status=200)
 
-# @login_required
 @api_view(['GET'])
 def tweetListView(request,*args,**kwargs):
     qs = Tweet.objects.all()
@@ -45,27 +43,16 @@ def tweetCreateView(request,*args,**kwargs):
     return Response({},status=400)
 
 
-@api_view(['POST','DELETE'])
+@api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def tweetEditView(request,tweet_id,*args,**kwargs):
-
     tweet = Tweet.objects.get(id=tweet_id)
-    form = TweetForm(instance=tweet)
+    serializer = TweetSerializer(instance=tweet,data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save(user=request.user)
+        return Response(serializer.data,status=201)
     
-    if request.method == "POST":
-        form = TweetForm(request.POST,instance=tweet)
-        if form.is_valid():
-            form.save()
-            # messages.success(request,"修正しました")
-            # tweet.save()
-            return redirect('tweet:tweetlist')
-    
-    context = {
-        "form":form
-    }
-
-    return render(request,"tweet/tweetedit.html",context)
-
+    return Response({},status=400)
 
 @api_view(['POST','DELETE'])
 @permission_classes([IsAuthenticated])
