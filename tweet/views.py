@@ -36,7 +36,7 @@ def tweetListView(request,*args,**kwargs):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def tweetCreateView(request,*args,**kwargs):
-    serializer = TweetSerializer(data=request.POST)
+    serializer = TweetCreateSerializer(data=request.POST)
     if serializer.is_valid(raise_exception=True):
         serializer.save(user=request.user)
         return Response(serializer.data,status=201)
@@ -76,6 +76,8 @@ def tweetLikeView(request,*args,**kwargs):
         data = serializer.validated_data
         tweet_id=data.get("id")
         action = data.get("action")
+        text = data.get("text")
+        print(data)
         qs = Tweet.objects.filter(id=tweet_id)
         if not qs.exists():
             return Response({},status=404)
@@ -88,9 +90,14 @@ def tweetLikeView(request,*args,**kwargs):
         elif action == "unlike":
             tweet.like.remove(request.user)
         elif action == "retweet":
-            pass
+            new_tweet = Tweet.objects.create(
+                user = request.user,
+                retweet = tweet,
+                text = text,
+            )
+            serializer = TweetSerializer(new_tweet)
+            return Response(serializer.data,status=200)
     return Response({},status=200)
-
 
 def tweetDetailViewDjango(request,tweet_id,*args,**kwargs):
 

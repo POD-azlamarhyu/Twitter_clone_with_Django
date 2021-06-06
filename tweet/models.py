@@ -6,6 +6,7 @@ User = settings.AUTH_USER_MODEL
 
 class Tweet(models.Model):
     #id = models.AutoField(primary_key=True)
+    retweet = models.ForeignKey("self",null=True,on_delete=models.SET_NULL)
     user = models.ForeignKey(User,on_delete=models.CASCADE,related_name="tweet")
     text = models.CharField(max_length=500,blank=True,null=True)
     images = models.FileField(upload_to='images/',blank=True,null=True)
@@ -17,6 +18,10 @@ class Tweet(models.Model):
 
     class Meta:
         ordering = ['-id']
+
+    @property
+    def is_retweet(self):
+        return self.retweet != None
 
 
     def serialize(self):
