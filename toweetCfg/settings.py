@@ -28,7 +28,8 @@ SECRET_KEY = KEY
 DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1','localhost']
-
+MAX_TWEET_LENGTH = 500
+TWEET_ACTION_OPTIONS = ["like", "unlike", "retweet"]
 LOGIN_URL = 'login/'
 LOGOUT_URL = 'logout/'
 LOGIN_REDIRECT_URL = 'tweet:tweetlist/'
@@ -44,6 +45,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'tweet',
     'accounts',
+    'rest_framework',
 ]
 
 MIDDLEWARE = [
@@ -123,6 +125,19 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.2/howto/static-files/
+DEFAULT_RENDERER_CLASSES = [
+    'rest_framework.renderers.JSONRenderer',
+]
+REST_FRAMEWORK = {
+    
+    'DEFAULT_AUTHENTICATION_CLASSES': [
+        'rest_framework.authentication.SessionAuthentication'
+    ],
+    'DEFAULT_PERMISSION_CLASSES':[
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_RENDERER_CLASSES': DEFAULT_RENDERER_CLASSES
+}
 
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR,'static'),

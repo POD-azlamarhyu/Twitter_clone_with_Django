@@ -2,10 +2,110 @@ from django.shortcuts import render,redirect,get_object_or_404
 from django.http import HttpResponse,Http404,JsonResponse
 from .models import *
 from .forms import *
+from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-# Create your views here.
+from .serializers import *
+from rest_framework.authentication import SessionAuthentication
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
+from rest_framework.permissions import IsAuthenticated
+from rest_framework.response import Response
 
+# @login_required
+def tweetHomeView(request,*args,**kwargs):
+    username = None
+    if request.user.is_authenticated:
+        username = request.user.username
+    return render(request,"tweet/tweet.html",context={"username": username}, status=200)
+
+@api_view(['GET'])
 def tweetDetailView(request,tweet_id,*args,**kwargs):
+    qs = Tweet.objects.filter(id=tweet_id)
+    if not qs.exists():
+        return Response({},status=200)
+    
+    tweet = qs.first()
+    serializer = TweetSerializer(tweet)
+
+    return Response(serializer.data,status=200)
+
+# @login_required
+@api_view(['GET'])
+def tweetListView(request,*args,**kwargs):
+    qs = Tweet.objects.all()
+    serializer = TweetSerializer(qs,many=True)
+    return Response(serializer.data,status=200)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def tweetCreateView(request,*args,**kwargs):
+    serializer = TweetSerializer(data=request.POST)
+    if serializer.is_valid(raise_exception=True):
+        serializer.save(user=request.user)
+        return Response(serializer.data,status=201)
+    return Response({},status=400)
+
+
+@api_view(['POST','DELETE'])
+@permission_classes([IsAuthenticated])
+def tweetEditView(request,tweet_id,*args,**kwargs):
+
+    tweet = Tweet.objects.get(id=tweet_id)
+    form = TweetForm(instance=tweet)
+    
+    if request.method == "POST":
+        form = TweetForm(request.POST,instance=tweet)
+        if form.is_valid():
+            form.save()
+            # messages.success(request,"修正しました")
+            # tweet.save()
+            return redirect('tweet:tweetlist')
+    
+    context = {
+        "form":form
+    }
+
+    return render(request,"tweet/tweetedit.html",context)
+
+
+@api_view(['POST','DELETE'])
+@permission_classes([IsAuthenticated])
+def tweetDeleteView(request,tweet_id,*args,**kwargs):
+    qs = Tweet.objects.filter(id=tweet_id)
+    if not qs.exists():
+        return Response({},status=404)
+
+    tweet = qs.first()
+    tweet.delete()
+    context = {
+        "message":"Tweet removed"
+    }
+    return Response(context,status=200)
+
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def tweetLikeView(request,*args,**kwargs):
+    serializer = TweetActionSerializer(data=request.data)
+    if serializer.is_valid(raise_exception=True):
+        data = serializer.validated_data
+        tweet_id=data.get("id")
+        action = data.get("action")
+        qs = Tweet.objects.filter(id=tweet_id)
+        if not qs.exists():
+            return Response({},status=404)
+
+        tweet=qs.first()
+        if action == "like":
+            tweet.like.add(request.user)
+            serializer = TweetSerializer(tweet)
+            return Response(serializer.data,status=200)
+        elif action == "unlike":
+            tweet.like.remove(request.user)
+        elif action == "retweet":
+            pass
+    return Response({},status=200)
+
+
+def tweetDetailViewDjango(request,tweet_id,*args,**kwargs):
 
     """
     Rest API View
@@ -42,7 +142,7 @@ def tweetDetailView(request,tweet_id,*args,**kwargs):
 
     return render(request,'tweet/tweetdetail.html',context)
 
-def tweetListView(request,*args,**kwargs):
+def tweetListViewDjango(request,*args,**kwargs):
     qs = Tweet.objects.all()
     #tweetList = [{"id" : x.id,"text":x.text} for x in qs]
 
@@ -50,9 +150,9 @@ def tweetListView(request,*args,**kwargs):
         "tweetlist" : qs
     }
 
-    return render(request,"tweet/tweet.html",context)
+    return render(request,"tweet/tweetlist.html",context)
 
-def tweetCreateView(request,*args,**kwargs):
+def tweetCreateViewDjango(request,*args,**kwargs):
 
     user = request.user
 
@@ -78,9 +178,9 @@ def tweetCreateView(request,*args,**kwargs):
         "form" : form,
     }
 
-    return render(request,"tweet/tweetform.html",context)
+    return render(request,"tweet/tweetcreate.html",context)
 
-def tweetEditView(request,tweet_id,*args,**kwargs):
+def tweetEditViewDjango(request,tweet_id,*args,**kwargs):
 
     tweet = Tweet.objects.get(id=tweet_id)
     form = TweetForm(instance=tweet)
@@ -99,7 +199,7 @@ def tweetEditView(request,tweet_id,*args,**kwargs):
 
     return render(request,"tweet/tweetedit.html",context)
 
-def tweetDeleteView(request,tweet_id,*args,**kwargs):
+def tweetDeleteViewDjango(request,tweet_id,*args,**kwargs):
     tweet = Tweet.objects.get(id=tweet_id)
 
     if request.method == "POST":
@@ -113,5 +213,3 @@ def tweetDeleteView(request,tweet_id,*args,**kwargs):
     }
 
     return render(request,'tweet/tweetdelete.html',context)
-
-    

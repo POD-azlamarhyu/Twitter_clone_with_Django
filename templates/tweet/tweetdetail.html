@@ -6,9 +6,9 @@
         <p>{{tweet.text}}</p>
     </div>
     <div>
-        <a href="{% url 'tweet:tweetedit' tweet.id %}">編集</a>
-        <a href="{% url 'tweet:tweetlist' %}">戻る</a>
-        <a href="{% url 'tweet:tweetdelete' tweet.id %}">削除</a>
+        <a href="{% url 'tweet:tweeteditdjango' tweet.id %}">編集</a>
+        <a href="{% url 'tweet:tweethome' %}">戻る</a>
+        <a href="{% url 'tweet:tweetdeletedjango' tweet.id %}">削除</a>
     </div>
 </div>
 {% endblock%}

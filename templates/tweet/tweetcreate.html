@@ -7,7 +7,7 @@
     {{form.as_p}}
     <button type="submit">tweet</button>
 </form>
-<a href="{% url 'tweet:tweetlist' %}">戻る</a>
+<a href="{% url 'tweet:tweethome' %}">戻る</a>
 <div>
     {% if form.errors %}
         {% for error in form.non_field_errors%}
