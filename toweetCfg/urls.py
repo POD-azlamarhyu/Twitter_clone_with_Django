@@ -16,6 +16,8 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path,include
 from django.shortcuts import render
+from django.conf import settings
+from django.conf.urls.static import static
 
 def topView(request):
     return render(request,'base.html')
@@ -25,8 +27,8 @@ def homeView(request):
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('home/',homeView,name="base"),
     path('',topView),
     path('',include('tweet.urls')),
     path('',include('accounts.urls')),
 ]
+urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
